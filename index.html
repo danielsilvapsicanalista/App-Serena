@@ -1,0 +1,1686 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Serena — Controle do Transtorno de Ansiedade | Daniel Silva Psicanalista</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Sora & Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Sora:wght@400;600;700;800&display=swap" rel="stylesheet">
+  
+  <!-- React & ReactDOM & Babel -->
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            alabaster: {
+              50: '#FFFDF9',
+              100: '#FAF4EC',
+              200: '#F2E6D5',
+              300: '#E4D3BD',
+              400: '#D0BAA0'
+            },
+            amberWarm: {
+              50: '#FFF8F0',
+              100: '#FEEED6',
+              200: '#FCD8AC',
+              500: '#E08A3E',
+              600: '#C97126',
+              700: '#A65416',
+              800: '#823D0F',
+              900: '#4A2106'
+            },
+            softPurple: {
+              50: '#F8F6FD',
+              100: '#EFEBF8',
+              200: '#DBCEF2',
+              500: '#7E63B8',
+              600: '#674AA5',
+              700: '#52378C',
+              800: '#3D276A',
+              900: '#1F1538'
+            },
+            sage: {
+              50: '#F4F8F5',
+              100: '#E3ECE6',
+              200: '#C7D9CD',
+              500: '#5F8D75',
+              600: '#4B7B61',
+              700: '#3B634E',
+              800: '#2E4D3D',
+              900: '#1D3328'
+            },
+            darkNavy: {
+              800: '#262035',
+              900: '#1A1625',
+              950: '#110E1A'
+            }
+          },
+          fontFamily: {
+            sora: ['Sora', 'sans-serif'],
+            sans: ['Inter', 'sans-serif']
+          },
+          animation: {
+            'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+            'spin-slow': 'spin 12s linear infinite',
+            'float': 'float 6s ease-in-out infinite',
+            'breathe': 'breatheCycle 8s ease-in-out infinite'
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-6px)' }
+            },
+            breatheCycle: {
+              '0%, 100%': { transform: 'scale(1)', opacity: 0.8 },
+              '50%': { transform: 'scale(1.35)', opacity: 1 }
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #FFFDF9;
+      color: #2D3748;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Sora', sans-serif;
+    }
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .glass-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+
+    @keyframes motionVaiVem {
+      0%, 100% { transform: translateX(-75px) rotate(0deg); }
+      50% { transform: translateX(75px) rotate(180deg); }
+    }
+    @keyframes motionVaiVemReverted {
+      0%, 100% { transform: translateY(-65px) rotate(180deg); }
+      50% { transform: translateY(65px) rotate(0deg); }
+    }
+    @keyframes motionPulsando {
+      0%, 100% { transform: scale(0.35); opacity: 0.4; }
+      50% { transform: scale(1.25); opacity: 1; }
+    }
+    @keyframes motionVibrando {
+      0%, 100% { transform: translate(-50px, -25px) scale(0.9); }
+      25% { transform: translate(50px, 25px) scale(1.1); }
+      50% { transform: translate(-50px, 25px) scale(0.9); }
+      75% { transform: translate(50px, -25px) scale(1.1); }
+    }
+  </style>
+</head>
+<body class="bg-alabaster-50 text-slate-800 antialiased selection:bg-amberWarm-100 selection:text-amberWarm-900 pb-24 md:pb-12">
+
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef, useMemo } = React;
+
+    const Icon = ({ name, className = "w-5 h-5", ...props }) => {
+      const icons = {
+        Heart: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
+          </svg>
+        ),
+        Shield: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+          </svg>
+        ),
+        BreathIcon: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+        ),
+        Brain: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 01-2 2h-0a2 2 0 01-2-2v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+          </svg>
+        ),
+        CheckCircle: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        ),
+        MessageCircle: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+          </svg>
+        ),
+        Compass: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        ),
+        Sparkles: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+          </svg>
+        ),
+        Train: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h12a2 2 0 012 2v8a2 2 0 01-2 2h-2m-8 0l-2 3m10-3l2 3m-8-3h4M12 4v4m-4 8h.01M16 16h.01" />
+          </svg>
+        ),
+        Lock: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+        ),
+        Eye: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+          </svg>
+        ),
+        Ear: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+          </svg>
+        ),
+        Hand: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m0 0V5a1.5 1.5 0 00-3 0m0 0V3.5a1.5 1.5 0 00-3 0V11.5" />
+          </svg>
+        ),
+        Volume2: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+          </svg>
+        ),
+        VolumeX: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+          </svg>
+        ),
+        History: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+        ),
+        Circle: (
+          <svg className={className} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2" {...props}>
+            <circle cx="12" cy="12" r="9" />
+          </svg>
+        )
+      };
+      return icons[name] || icons.Sparkles;
+    };
+
+    const BrandLogo = ({ className = "w-10 h-10" }) => (
+      <div className={`relative flex items-center justify-center rounded-2xl bg-gradient-to-tr from-amberWarm-600 via-amberWarm-500 to-softPurple-500 text-white shadow-md shadow-amberWarm-600/20 overflow-hidden ${className}`}>
+        <div className="absolute inset-0 bg-white/10 rounded-2xl animate-pulse-slow"></div>
+        <svg className="w-3/5 h-3/5 relative z-10" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M16 28C22.6274 28 28 22.6274 28 16C28 9.37258 22.6274 4 16 4C9.37258 4 4 9.37258 4 16C4 22.6274 9.37258 28 16 28Z" stroke="white" strokeWidth="2" strokeOpacity="0.5" strokeDasharray="3 3"/>
+          <path d="M16 23V13" stroke="white" strokeWidth="2.2" strokeLinecap="round"/>
+          <path d="M16 16C19 12 24 13 24 17C24 20 20 22 16 23" fill="white" fillOpacity="0.25" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+          <path d="M16 19C13 15 8 16 8 20C8 23 12 24 16 23" fill="white" fillOpacity="0.35" stroke="white" strokeWidth="1.8" strokeLinecap="round"/>
+          <circle cx="16" cy="9" r="2.2" fill="#FEEED6"/>
+        </svg>
+      </div>
+    );
+
+    const Step1Illustration = ({ className = "w-full h-32" }) => (
+      <svg className={className} viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" rx="16" fill="#FFF9F0"/>
+        <circle cx="100" cy="70" r="45" fill="#FEEED6" fillOpacity="0.7"/>
+        <path d="M100 45 C88 45 80 54 80 68 C80 82 90 92 100 95 C110 92 120 82 120 68 C120 54 112 45 100 45 Z" fill="#7E63B8" fillOpacity="0.8"/>
+        <circle cx="100" cy="40" r="14" fill="#E08A3E"/>
+        <path d="M85 70 C85 62 90 60 100 60 C110 60 115 62 115 70 C115 85 85 85 85 70 Z" fill="#FFFDF9"/>
+        <path d="M90 64 Q98 55 106 64" stroke="#E08A3E" strokeWidth="3" strokeLinecap="round"/>
+        <circle cx="120" cy="55" r="4" fill="#E08A3E" className="animate-ping"/>
+        <path d="M65 70 A35 35 0 0 1 135 70" stroke="#7E63B8" strokeWidth="2" strokeDasharray="4 4"/>
+      </svg>
+    );
+
+    const Step2Illustration = ({ className = "w-full h-32" }) => (
+      <svg className={className} viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" rx="16" fill="#F8F6FD"/>
+        <circle cx="100" cy="70" r="50" fill="#EBE5F7" fillOpacity="0.8"/>
+        <circle cx="100" cy="70" r="35" fill="#DBCEF2" fillOpacity="0.6"/>
+        <circle cx="100" cy="42" r="13" fill="#674AA5"/>
+        <path d="M82 72 C82 58 118 58 118 72 C118 90 82 90 82 72 Z" fill="#E08A3E"/>
+        <path d="M70 70 Q100 35 130 70 Q100 105 70 70 Z" fill="none" stroke="#7E63B8" strokeWidth="2" strokeOpacity="0.5"/>
+      </svg>
+    );
+
+    const Step3Illustration = ({ className = "w-full h-32" }) => (
+      <svg className={className} viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" rx="16" fill="#F4F8F5"/>
+        <rect x="70" y="55" width="60" height="45" rx="10" fill="#4B7B61"/>
+        <path d="M65 65 H135 V85 H65 Z" fill="#3B634E"/>
+        <rect x="85" y="42" width="30" height="25" rx="6" fill="#E3ECE6"/>
+        <circle cx="145" cy="45" r="10" fill="#FEEED6"/>
+        <path d="M145 55 V85" stroke="#E08A3E" strokeWidth="2"/>
+        <path d="M50 85 Q60 55 60 90" stroke="#5F8D75" strokeWidth="3" strokeLinecap="round"/>
+      </svg>
+    );
+
+    const Step4Illustration = ({ className = "w-full h-32" }) => (
+      <svg className={className} viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="200" height="140" rx="16" fill="#FFF8F0"/>
+        <circle cx="100" cy="50" r="16" fill="#E08A3E"/>
+        <path d="M82 82 C82 66 118 66 118 82 L110 100 H90 Z" fill="#674AA5"/>
+        <circle cx="100" cy="30" r="6" fill="#FCD8AC"/>
+        <path d="M70 45 Q100 20 130 45" stroke="#E08A3E" strokeWidth="2" strokeDasharray="3 3"/>
+      </svg>
+    );
+
+    function App() {
+      const [activeTab, setActiveTab] = useState('inicio');
+
+      // Calming Ambient Sound Audio Synthesizer
+      const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+      const audioCtxRef = useRef(null);
+      const noiseNodeRef = useRef(null);
+      const gainNodeRef = useRef(null);
+
+      const toggleCalmAudio = () => {
+        if (isAudioPlaying) {
+          if (gainNodeRef.current && audioCtxRef.current) {
+            gainNodeRef.current.gain.exponentialRampToValueAtTime(0.0001, audioCtxRef.current.currentTime + 1);
+            setTimeout(() => {
+              if (audioCtxRef.current) audioCtxRef.current.suspend();
+              setIsAudioPlaying(false);
+            }, 1000);
+          }
+        } else {
+          try {
+            if (!audioCtxRef.current) {
+              const AudioContext = window.AudioContext || window.webkitAudioContext;
+              const ctx = new AudioContext();
+              audioCtxRef.current = ctx;
+
+              const bufferSize = ctx.sampleRate * 2;
+              const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+              const output = noiseBuffer.getChannelData(0);
+              let lastOut = 0.0;
+              for (let i = 0; i < bufferSize; i++) {
+                const white = Math.random() * 2 - 1;
+                output[i] = (lastOut + (0.02 * white)) / 1.02;
+                lastOut = output[i];
+                output[i] *= 3.2;
+              }
+
+              const whiteNoise = ctx.createBufferSource();
+              whiteNoise.buffer = noiseBuffer;
+              whiteNoise.loop = true;
+
+              const filter = ctx.createBiquadFilter();
+              filter.type = 'lowpass';
+              filter.frequency.value = 320;
+
+              const lfo = ctx.createOscillator();
+              lfo.type = 'sine';
+              lfo.frequency.value = 0.11;
+
+              const lfoGain = ctx.createGain();
+              lfoGain.gain.value = 180;
+
+              lfo.connect(lfoGain);
+              lfoGain.connect(filter.frequency);
+
+              const gainNode = ctx.createGain();
+              gainNode.gain.value = 0.14;
+
+              whiteNoise.connect(filter);
+              filter.connect(gainNode);
+              gainNode.connect(ctx.destination);
+
+              whiteNoise.start();
+              lfo.start();
+
+              noiseNodeRef.current = whiteNoise;
+              gainNodeRef.current = gainNode;
+            } else {
+              audioCtxRef.current.resume();
+            }
+            setIsAudioPlaying(true);
+          } catch (e) {
+            console.error("Audio error:", e);
+          }
+        }
+      };
+
+      // Triage Quiz State
+      const [quizAnswers, setQuizAnswers] = useState({ symptom: '', urgency: '' });
+      const [quizSubmitted, setQuizSubmitted] = useState(false);
+
+      // Step completion tracking
+      const [completedSteps, setCompletedSteps] = useState(() => {
+        try {
+          const saved = localStorage.getItem('serena_completed_steps');
+          return saved ? JSON.parse(saved) : { step1: false, step2: false, step3: false, step4: false, grounding: false };
+        } catch (e) {
+          return { step1: false, step2: false, step3: false, step4: false, grounding: false };
+        }
+      });
+
+      useEffect(() => {
+        try {
+          localStorage.setItem('serena_completed_steps', JSON.stringify(completedSteps));
+        } catch (e) {}
+      }, [completedSteps]);
+
+      const toggleStep = (stepKey) => {
+        setCompletedSteps(prev => ({ ...prev, [stepKey]: !prev[stepKey] }));
+      };
+
+      // Step 1 Interactive State
+      const [somaticRegion, setSomaticRegion] = useState('peito'); // 'peito' | 'garganta' | 'barriga' | 'cabeca' | 'ombros'
+      const [somaticMotionType, setSomaticMotionType] = useState('girando'); // 'girando' | 'vai-vem' | 'pulsando' | 'vibrando'
+      const [somaticSpeed, setSomaticSpeed] = useState(6); // 1 - 10
+      const [somaticDirection, setSomaticDirection] = useState('horario'); // 'horario' | 'anti-horario'
+      const [isSomaticReverted, setIsSomaticReverted] = useState(false);
+      const [somaticStepGuide, setSomaticStepGuide] = useState(1);
+      const [visualTrackerMode, setVisualTrackerMode] = useState('bola'); // 'bola' | 'mao'
+
+      const regionDetails = {
+        peito: { title: 'Peito / Coração', desc: 'Aperto no peito ou aceleração cardíaca.', icon: 'Heart', defaultMotion: 'girando' },
+        garganta: { title: 'Garganta / Pescoço', desc: 'Sensação de "nó", sufocamento ou trava no eixo.', icon: 'BreathIcon', defaultMotion: 'vai-vem' },
+        barriga: { title: 'Estômago / Plexo', desc: 'Frio na barriga, nó em espiral ou turbilhão.', icon: 'Compass', defaultMotion: 'girando' },
+        cabeca: { title: 'Cabeça / Mente', desc: 'Pressão nas têmporas ou zumbido em vibração.', icon: 'Brain', defaultMotion: 'vibrando' },
+        ombros: { title: 'Ombros / Costas', desc: 'Tensão muscular e peso contraindo/expandindo.', icon: 'Shield', defaultMotion: 'pulsando' }
+      };
+
+      const motionLabels = {
+        girando: { name: 'Girando no Entorno', desc: 'Rotação contínua ao redor do centro do sintoma' },
+        'vai-vem': { name: 'De um Lado para Outro (Eixo)', desc: 'Balanço oscilante transversal ou vertical no eixo' },
+        pulsando: { name: 'Pulsando / Expandindo', desc: 'Aperto que infla e desacelera do centro para fora' },
+        vibrando: { name: 'Onda / Vibração', desc: 'Oscilação em onda zigue-zague acelerada' }
+      };
+
+      const [breathePhase, setBreathePhase] = useState('idle');
+      const [breatheCounter, setBreatheCounter] = useState(0);
+      const [breatheCyclesLeft, setBreatheCyclesLeft] = useState(3);
+      const breatheIntervalRef = useRef(null);
+
+      const startBreathing = () => {
+        setBreatheCyclesLeft(3);
+        runBreathingCycle(3);
+      };
+
+      const stopBreathing = () => {
+        if (breatheIntervalRef.current) clearInterval(breatheIntervalRef.current);
+        setBreathePhase('idle');
+        setBreatheCounter(0);
+      };
+
+      const runBreathingCycle = (remainingCycles) => {
+        if (remainingCycles <= 0) {
+          setBreathePhase('idle');
+          setCompletedSteps(prev => ({ ...prev, step2: true }));
+          return;
+        }
+
+        setBreathePhase('inhale');
+        let count = 4;
+        setBreatheCounter(count);
+
+        const inhaleTimer = setInterval(() => {
+          count--;
+          setBreatheCounter(count);
+          if (count <= 0) {
+            clearInterval(inhaleTimer);
+            setBreathePhase('hold');
+            let holdCount = 7;
+            setBreatheCounter(holdCount);
+
+            const holdTimer = setInterval(() => {
+              holdCount--;
+              setBreatheCounter(holdCount);
+              if (holdCount <= 0) {
+                clearInterval(holdTimer);
+                setBreathePhase('exhale');
+                let exhaleCount = 8;
+                setBreatheCounter(exhaleCount);
+
+                const exhaleTimer = setInterval(() => {
+                  exhaleCount--;
+                  setBreatheCounter(exhaleCount);
+                  if (exhaleCount <= 0) {
+                    clearInterval(exhaleTimer);
+                    setBreatheCyclesLeft(remainingCycles - 1);
+                    runBreathingCycle(remainingCycles - 1);
+                  }
+                }, 1000);
+                breatheIntervalRef.current = exhaleTimer;
+              }
+            }, 1000);
+            breatheIntervalRef.current = holdTimer;
+          }
+        }, 1000);
+        breatheIntervalRef.current = inhaleTimer;
+      };
+
+      const [safePlace, setSafePlace] = useState(() => {
+        try {
+          const saved = localStorage.getItem('serena_safe_place');
+          return saved ? JSON.parse(saved) : { name: 'Jardim Ensolarado de Lavandas', smells: 'Cheiro suave de terra molhada e flor de laranjeira', touch: 'Brisa leve e acalentadora na pele', gesture: 'Unir o polegar ao indicador suavemente' };
+        } catch (e) {
+          return { name: 'Jardim Ensolarado de Lavandas', smells: 'Cheiro suave de terra molhada e flor de laranjeira', touch: 'Brisa leve e acalentadora na pele', gesture: 'Unir o polegar ao indicador suavemente' };
+        }
+      });
+
+      const handleSaveSafePlace = (e) => {
+        e.preventDefault();
+        try {
+          localStorage.setItem('serena_safe_place', JSON.stringify(safePlace));
+          setCompletedSteps(prev => ({ ...prev, step3: true }));
+        } catch (err) {}
+      };
+
+      const [spaThought, setSpaThought] = useState('');
+      const [que1, setQue1] = useState('');
+      const [que2, setQue2] = useState('');
+      const [que3, setQue3] = useState('');
+      const [spaGenerated, setSpaGenerated] = useState(false);
+
+      const handleProcessSpa = (e) => {
+        e.preventDefault();
+        setSpaGenerated(true);
+        setCompletedSteps(prev => ({ ...prev, step4: true }));
+      };
+
+      const [crisisLogs, setCrisisLogs] = useState(() => {
+        try {
+          const saved = localStorage.getItem('serena_crisis_logs');
+          return saved ? JSON.parse(saved) : [];
+        } catch (e) {
+          return [];
+        }
+      });
+
+      const [newLog, setNewLog] = useState({ initialAnxiety: 8, finalAnxiety: 3, notes: '' });
+
+      const handleAddCrisisLog = (e) => {
+        e.preventDefault();
+        const entry = {
+          id: Date.now(),
+          date: new Date().toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' }),
+          initialAnxiety: Number(newLog.initialAnxiety),
+          finalAnxiety: Number(newLog.finalAnxiety),
+          notes: newLog.notes || 'Sessão concluída com aplicação das ferramentas Serena.'
+        };
+        const updated = [entry, ...crisisLogs];
+        setCrisisLogs(updated);
+        try {
+          localStorage.setItem('serena_crisis_logs', JSON.stringify(updated));
+        } catch (err) {}
+        setNewLog({ initialAnxiety: 8, finalAnxiety: 3, notes: '' });
+      };
+
+      const handleClearLogs = () => {
+        setCrisisLogs([]);
+        try {
+          localStorage.removeItem('serena_crisis_logs');
+        } catch (err) {}
+      };
+
+      const scrollToSection = (id) => {
+        setActiveTab(id);
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+      };
+
+      return (
+        <div className="min-h-screen flex flex-col bg-alabaster-50 text-slate-800">
+          
+          {/* Header Bar with Warm Palette */}
+          <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-alabaster-200 shadow-sm">
+            <div className="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+              
+              <div className="flex items-center space-x-3 cursor-pointer" onClick={() => scrollToSection('inicio')}>
+                <BrandLogo className="w-10 h-10" />
+                <div>
+                  <div className="flex items-center space-x-1.5">
+                    <span className="font-heading font-extrabold text-xl tracking-tight text-slate-900">Serena</span>
+                    <span className="text-[10px] bg-amberWarm-100 text-amberWarm-800 font-bold px-2 py-0.5 rounded-full border border-amberWarm-200">INJAVI</span>
+                  </div>
+                  <p className="text-[11px] text-softPurple-700 font-semibold leading-none">Daniel Silva — Psicanalista</p>
+                </div>
+              </div>
+
+              {/* Desktop Nav */}
+              <nav className="hidden md:flex items-center space-x-6 text-sm font-medium text-slate-600">
+                <button onClick={() => scrollToSection('inicio')} className={`transition-colors hover:text-amberWarm-600 ${activeTab === 'inicio' ? 'text-amberWarm-700 font-bold' : ''}`}>Início</button>
+                <button onClick={() => scrollToSection('diagnostico')} className={`transition-colors hover:text-amberWarm-600 ${activeTab === 'diagnostico' ? 'text-amberWarm-700 font-bold' : ''}`}>Triagem</button>
+                <button onClick={() => scrollToSection('protocolo')} className={`transition-colors hover:text-amberWarm-600 ${activeTab === 'protocolo' ? 'text-amberWarm-700 font-bold' : ''}`}>O Método</button>
+                <button onClick={() => scrollToSection('aterramento')} className={`transition-colors hover:text-amberWarm-600 ${activeTab === 'aterramento' ? 'text-amberWarm-700 font-bold' : ''}`}>Aterramento</button>
+                <button onClick={() => scrollToSection('diario')} className={`transition-colors hover:text-amberWarm-600 ${activeTab === 'diario' ? 'text-amberWarm-700 font-bold' : ''}`}>Diário</button>
+              </nav>
+
+              <div className="flex items-center space-x-2">
+                <button
+                  onClick={toggleCalmAudio}
+                  className={`p-2 rounded-xl text-xs font-semibold flex items-center space-x-1.5 transition-all ${
+                    isAudioPlaying 
+                      ? 'bg-softPurple-600 text-white shadow-md ring-2 ring-softPurple-300' 
+                      : 'bg-white border border-alabaster-200 text-slate-700 hover:bg-alabaster-100'
+                  }`}
+                >
+                  <Icon name={isAudioPlaying ? "Volume2" : "VolumeX"} className="w-4 h-4" />
+                  <span className="hidden sm:inline">{isAudioPlaying ? 'Ondas de Calma' : 'Som Terapêutico'}</span>
+                </button>
+
+                <button 
+                  onClick={() => scrollToSection('protocolo')}
+                  className="bg-amberWarm-500 hover:bg-amberWarm-600 text-white font-semibold text-xs md:text-sm px-4 py-2 rounded-xl shadow transition-all duration-300 hover:scale-[1.02] flex items-center space-x-1.5"
+                >
+                  <Icon name="Shield" className="w-4 h-4" />
+                  <span>SOS Crise</span>
+                </button>
+              </div>
+
+            </div>
+          </header>
+
+          {}
+          <main className="flex-1 max-w-5xl w-full mx-auto px-4 py-6 md:py-10 space-y-10">
+            
+            <section id="inicio" className="text-center space-y-5 pt-2">
+              <div className="inline-flex items-center space-x-2 bg-amberWarm-50 border border-amberWarm-200 px-3.5 py-1 rounded-full text-xs font-bold text-amberWarm-800">
+                <Icon name="Sparkles" className="w-4 h-4 text-amberWarm-600" />
+                <span>Método Psicanalítico & PNL para Controle da Ansiedade</span>
+              </div>
+
+              {/* Reduced Hero Title */}
+              <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-slate-900 leading-snug max-w-2xl mx-auto tracking-tight">
+                Reassuma o volante do seu corpo e <span className="text-transparent bg-clip-text bg-gradient-to-r from-amberWarm-600 via-softPurple-600 to-amberWarm-700">pacifique a mente no presente.</span>
+              </h1>
+
+              <p className="text-xs sm:text-sm md:text-base text-slate-600 max-w-2xl mx-auto font-normal leading-relaxed">
+                A ansiedade é um sistema inconsciente de defesa ativado em excesso. Quando a mente perde o contato com o aqui e agora, o trem roda sem maquinista. Use as 4 ferramentas para reconduzir seu corpo à serenidade.
+              </p>
+
+              {/* 4 Steps Overview Cards with SVG Vector Illustrations */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 pt-3 text-left">
+                
+                <div 
+                  onClick={() => scrollToSection('passo1')} 
+                  className="bg-white p-3.5 rounded-2xl border border-alabaster-200 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="w-7 h-7 rounded-xl bg-amberWarm-500 text-white font-bold text-xs flex items-center justify-center">1</span>
+                      <span className="text-[10px] font-bold text-amberWarm-700 uppercase bg-amberWarm-50 px-2 py-0.5 rounded-md">Passo 1</span>
+                    </div>
+                    <Step1Illustration className="w-full h-24 mb-2 group-hover:scale-105 transition-transform" />
+                    <h4 className="font-heading font-bold text-xs text-slate-900">Movimento da Sensação</h4>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">Mapeie e inverta o sentido da rotação no corpo</p>
+                  </div>
+                </div>
+
+                <div 
+                  onClick={() => scrollToSection('passo2')} 
+                  className="bg-white p-3.5 rounded-2xl border border-alabaster-200 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="w-7 h-7 rounded-xl bg-softPurple-600 text-white font-bold text-xs flex items-center justify-center">2</span>
+                      <span className="text-[10px] font-bold text-softPurple-700 uppercase bg-softPurple-50 px-2 py-0.5 rounded-md">Passo 2</span>
+                    </div>
+                    <Step2Illustration className="w-full h-24 mb-2 group-hover:scale-105 transition-transform" />
+                    <h4 className="font-heading font-bold text-xs text-slate-900">Respiração Guiada</h4>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">Regule o ritmo diafragmático com a técnica 4-7-8</p>
+                  </div>
+                </div>
+
+                <div 
+                  onClick={() => scrollToSection('passo3')} 
+                  className="bg-white p-3.5 rounded-2xl border border-alabaster-200 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="w-7 h-7 rounded-xl bg-sage-600 text-white font-bold text-xs flex items-center justify-center">3</span>
+                      <span className="text-[10px] font-bold text-sage-800 uppercase bg-sage-50 px-2 py-0.5 rounded-md">Passo 3</span>
+                    </div>
+                    <Step3Illustration className="w-full h-24 mb-2 group-hover:scale-105 transition-transform" />
+                    <h4 className="font-heading font-bold text-xs text-slate-900">Ancoragem Sensorial</h4>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">Crie seu refúgio e ative o gatilho neural de paz</p>
+                  </div>
+                </div>
+
+                <div 
+                  onClick={() => scrollToSection('passo4')} 
+                  className="bg-white p-3.5 rounded-2xl border border-alabaster-200 shadow-sm hover:shadow-md transition-all cursor-pointer flex flex-col justify-between group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="w-7 h-7 rounded-xl bg-amberWarm-600 text-white font-bold text-xs flex items-center justify-center">4</span>
+                      <span className="text-[10px] font-bold text-amberWarm-800 uppercase bg-amberWarm-50 px-2 py-0.5 rounded-md">Passo 4</span>
+                    </div>
+                    <Step4Illustration className="w-full h-24 mb-2 group-hover:scale-105 transition-transform" />
+                    <h4 className="font-heading font-bold text-xs text-slate-900">Estratégia dos 3 Quês</h4>
+                    <p className="text-[11px] text-slate-500 mt-0.5 leading-tight">Desarme a Síndrome do Pensamento Acelerado</p>
+                  </div>
+                </div>
+
+              </div>
+            </section>
+
+            {}
+            <section id="diagnostico" className="bg-white rounded-3xl p-6 sm:p-8 shadow-sm border border-alabaster-200 space-y-6">
+              <div className="flex items-start justify-between border-b border-alabaster-100 pb-4">
+                <div>
+                  <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-amberWarm-800 bg-amberWarm-50 px-2.5 py-1 rounded-md mb-2">
+                    <Icon name="Compass" className="w-3.5 h-3.5 text-amberWarm-600" />
+                    <span>Triagem do Estado Atual</span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Como você está se sentindo neste exato momento?</h2>
+                  <p className="text-xs sm:text-sm text-slate-500">Responda para receber o direcionamento psicanalítico ideal.</p>
+                </div>
+              </div>
+
+              {!quizSubmitted ? (
+                <div className="space-y-5">
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-800 mb-2">1. Qual a sensação predominante em seu corpo ou mente?</label>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {[
+                        { id: 'movimento', text: 'Sensação física localizada (rotação no peito, nó na garganta ou aperto)' },
+                        { id: 'respiracao', text: 'Sensação de falta de ar, tontura ou palpitação' },
+                        { id: 'desconexao', text: 'Sensação de irrealidade ou desconexão do próprio corpo' },
+                        { id: 'pensamento', text: 'Pensamentos acelerados prevendo cenários catastróficos' }
+                      ].map(opt => (
+                        <button
+                          key={opt.id}
+                          onClick={() => setQuizAnswers(prev => ({ ...prev, symptom: opt.id }))}
+                          className={`p-3.5 text-left rounded-xl text-xs sm:text-sm border font-medium transition-all ${
+                            quizAnswers.symptom === opt.id
+                              ? 'border-amberWarm-500 bg-amberWarm-50 text-amberWarm-900 shadow-sm ring-1 ring-amberWarm-400'
+                              : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
+                          }`}
+                        >
+                          {opt.text}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-slate-800 mb-2">2. Qual a intensidade dessa crise?</label>
+                    <div className="grid grid-cols-3 gap-2.5">
+                      {[
+                        { id: 'grave', text: 'Intensa / Pânico' },
+                        { id: 'medio', text: 'Moderada / Inseguro' },
+                        { id: 'leve', text: 'Início de Ansiedade' }
+                      ].map(opt => (
+                        <button
+                          key={opt.id}
+                          onClick={() => setQuizAnswers(prev => ({ ...prev, urgency: opt.id }))}
+                          className={`p-3 text-center rounded-xl text-xs sm:text-sm border font-medium transition-all ${
+                            quizAnswers.urgency === opt.id
+                              ? 'border-amberWarm-500 bg-amberWarm-50 text-amberWarm-900 shadow-sm ring-1 ring-amberWarm-400'
+                              : 'border-slate-200 hover:border-slate-300 text-slate-700 bg-white'
+                          }`}
+                        >
+                          {opt.text}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      if (quizAnswers.symptom) {
+                        setQuizSubmitted(true);
+                      }
+                    }}
+                    className="w-full bg-amberWarm-500 hover:bg-amberWarm-600 text-white font-semibold py-3.5 rounded-xl transition-all shadow text-sm"
+                  >
+                    Ver Direcionamento Personalizado
+                  </button>
+                </div>
+              ) : (
+                <div className="bg-amberWarm-50 border border-amberWarm-200 rounded-2xl p-5 sm:p-6 space-y-4">
+                  <div className="flex items-start space-x-3">
+                    <div className="w-10 h-10 rounded-full bg-amberWarm-500 text-white flex items-center justify-center font-bold shrink-0 mt-0.5">
+                      <Icon name="CheckCircle" className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-amberWarm-900 text-base">Direcionamento de Ação</h3>
+                      <p className="text-xs sm:text-sm text-slate-700 mt-1">
+                        {quizAnswers.symptom === 'movimento' && 'Inicie pela Ferramenta de Movimento da Sensação (Passo 1).'}
+                        {quizAnswers.symptom === 'respiracao' && 'Vá direto para a Respiração Guiada 4-7-8 (Passo 2) para reestabilizar a oxigenação.'}
+                        {quizAnswers.symptom === 'desconexao' && 'Utilize a Técnica de Aterramento Sensorial 5-4-3-2-1 para reconectar com a realidade.'}
+                        {quizAnswers.symptom === 'pensamento' && 'Utilize a Estratégia dos Três Quês (Passo 4) para desarmar os pensamentos acelerados.'}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div className="flex flex-col sm:flex-row gap-3 pt-2">
+                    <button
+                      onClick={() => {
+                        if (quizAnswers.symptom === 'movimento') scrollToSection('passo1');
+                        else if (quizAnswers.symptom === 'respiracao') scrollToSection('passo2');
+                        else if (quizAnswers.symptom === 'desconexao') scrollToSection('aterramento');
+                        else scrollToSection('passo4');
+                      }}
+                      className="flex-1 bg-amberWarm-500 hover:bg-amberWarm-600 text-white font-semibold py-3 px-4 rounded-xl text-xs sm:text-sm shadow text-center"
+                    >
+                      Ir Para a Ferramenta Indicada
+                    </button>
+                    <button
+                      onClick={() => setQuizSubmitted(false)}
+                      className="bg-white hover:bg-slate-100 text-slate-700 font-medium py-3 px-4 rounded-xl text-xs border border-slate-200 transition-colors"
+                    >
+                      Refazer Triagem
+                    </button>
+                  </div>
+                </div>
+              )}
+            </section>
+
+            {}
+            <section id="protocolo" className="space-y-8">
+              <div className="text-center space-y-2">
+                <span className="text-xs font-bold uppercase tracking-wider text-amberWarm-800 bg-amberWarm-100 px-3.5 py-1 rounded-full border border-amberWarm-200">
+                  O Método em 4 Passos
+                </span>
+                <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+                  Ferramentas Interativas de Pacificação
+                </h2>
+              </div>
+
+              {/* Step 1 Card: Ferramenta de Movimento da Sensação */}
+              <div id="passo1" className="bg-white rounded-3xl p-6 sm:p-8 border border-alabaster-200 shadow-sm space-y-6">
+                
+                {/* Header */}
+                <div className="flex items-center justify-between border-b border-alabaster-100 pb-4">
+                  <div className="flex items-center space-x-3">
+                    <span className="w-8 h-8 rounded-xl bg-amberWarm-500 text-white font-bold flex items-center justify-center text-sm shadow-sm">1</span>
+                    <div>
+                      <h3 className="font-heading font-bold text-base sm:text-lg text-slate-900">Passo 1: Movimento da Sensação</h3>
+                      <p className="text-xs text-slate-500">Mapeador corporal interativo com padrões de movimento reais do sintoma</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => toggleStep('step1')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-colors ${
+                      completedSteps.step1 ? 'bg-amberWarm-100 text-amberWarm-900' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    <Icon name="CheckCircle" className="w-4 h-4" />
+                    <span className="hidden sm:inline">{completedSteps.step1 ? 'Concluído' : 'Marcar Concluído'}</span>
+                  </button>
+                </div>
+
+                {/* Sub-steps Indicator bar */}
+                <div className="grid grid-cols-4 gap-2 text-center text-[11px] font-medium">
+                  {[
+                    { step: 1, label: '1. Localizar' },
+                    { step: 2, label: '2. Padrão' },
+                    { step: 3, label: '3. Inverter' },
+                    { step: 4, label: '4. Desacelerar' }
+                  ].map((s) => (
+                    <button
+                      key={s.step}
+                      onClick={() => setSomaticStepGuide(s.step)}
+                      className={`py-2 px-1 rounded-xl transition-all border ${
+                        somaticStepGuide === s.step 
+                          ? 'bg-amberWarm-500 text-white font-bold border-amberWarm-500 shadow-sm' 
+                          : 'bg-alabaster-50 border-alabaster-200 text-slate-600 hover:bg-alabaster-100'
+                      }`}
+                    >
+                      {s.label}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Interactive Tool Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
+                  
+                  {/* Left Column Controls */}
+                  <div className="md:col-span-5 space-y-4 bg-alabaster-50 p-4 sm:p-5 rounded-2xl border border-alabaster-200 text-xs">
+                    
+                    {somaticStepGuide === 1 && (
+                      <div className="space-y-3">
+                        <span className="font-bold text-slate-900 block text-xs">A. Onde você sente a sensação física agora?</span>
+                        <div className="grid grid-cols-1 gap-2">
+                          {Object.keys(regionDetails).map((key) => {
+                            const item = regionDetails[key];
+                            return (
+                              <button
+                                key={key}
+                                onClick={() => {
+                                  setSomaticRegion(key);
+                                  setSomaticMotionType(item.defaultMotion);
+                                  setSomaticStepGuide(2);
+                                }}
+                                className={`p-3 text-left rounded-xl border transition-all flex items-center justify-between ${
+                                  somaticRegion === key 
+                                    ? 'bg-amberWarm-100 border-amberWarm-500 text-amberWarm-900 font-bold shadow-sm' 
+                                    : 'bg-white border-slate-200 hover:border-slate-300 text-slate-700'
+                                }`}
+                              >
+                                <div className="flex items-center space-x-2.5">
+                                  <Icon name={item.icon} className="w-4 h-4 text-amberWarm-600" />
+                                  <span>{item.title}</span>
+                                </div>
+                                <span className="text-[10px] text-slate-400">Selecionar</span>
+                              </button>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {somaticStepGuide === 2 && (
+                      <div className="space-y-4">
+                        <div>
+                          <span className="font-bold text-slate-900 block mb-1.5">B. Padrão do Movimento da Sensação:</span>
+                          <div className="grid grid-cols-1 gap-2">
+                            {Object.keys(motionLabels).map((mKey) => (
+                              <button
+                                key={mKey}
+                                onClick={() => setSomaticMotionType(mKey)}
+                                className={`p-2.5 text-left rounded-xl border transition-all ${
+                                  somaticMotionType === mKey
+                                    ? 'bg-amberWarm-500 text-white font-bold border-amberWarm-500 shadow-sm'
+                                    : 'bg-white border-slate-200 text-slate-700 hover:border-slate-300'
+                                }`}
+                              >
+                                <div className="text-xs font-semibold">{motionLabels[mKey].name}</div>
+                                <div className={`text-[10px] ${somaticMotionType === mKey ? 'text-amberWarm-100' : 'text-slate-400'}`}>
+                                  {motionLabels[mKey].desc}
+                                </div>
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+
+                        <div>
+                          <span className="font-bold text-slate-900 block mb-1.5">C. Escolha o Guia Visual:</span>
+                          <div className="grid grid-cols-2 gap-2">
+                            <button
+                              onClick={() => setVisualTrackerMode('bola')}
+                              className={`p-2.5 rounded-xl text-center border font-semibold flex items-center justify-center space-x-1.5 ${
+                                visualTrackerMode === 'bola' ? 'bg-amberWarm-100 border-amberWarm-500 text-amberWarm-900' : 'bg-white border-slate-200 text-slate-700'
+                              }`}
+                            >
+                              <span className="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+                              <span>Bola de Luz</span>
+                            </button>
+                            <button
+                              onClick={() => setVisualTrackerMode('mao')}
+                              className={`p-2.5 rounded-xl text-center border font-semibold flex items-center justify-center space-x-1.5 ${
+                                visualTrackerMode === 'mao' ? 'bg-amberWarm-100 border-amberWarm-500 text-amberWarm-900' : 'bg-white border-slate-200 text-slate-700'
+                              }`}
+                            >
+                              <Icon name="Hand" className="w-4 h-4 text-amberWarm-600" />
+                              <span>Mão Guia</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {somaticMotionType === 'girando' && (
+                          <div>
+                            <span className="font-bold text-slate-900 block mb-1">Sentido da Rotação:</span>
+                            <div className="grid grid-cols-2 gap-2">
+                              <button
+                                onClick={() => setSomaticDirection('horario')}
+                                className={`p-2 rounded-xl text-center border ${
+                                  somaticDirection === 'horario' ? 'bg-amberWarm-100 text-amberWarm-900 font-bold border-amberWarm-400' : 'bg-white border-slate-200'
+                                }`}
+                              >
+                                ↻ Horário
+                              </button>
+                              <button
+                                onClick={() => setSomaticDirection('anti-horario')}
+                                className={`p-2 rounded-xl text-center border ${
+                                  somaticDirection === 'anti-horario' ? 'bg-amberWarm-100 text-amberWarm-900 font-bold border-amberWarm-400' : 'bg-white border-slate-200'
+                                }`}
+                              >
+                                ↺ Anti-Horário
+                              </button>
+                            </div>
+                          </div>
+                        )}
+
+                        <div>
+                          <div className="flex justify-between font-bold text-slate-800 mb-1">
+                            <span>Velocidade Percebida:</span>
+                            <span className="text-amberWarm-700">{somaticSpeed} / 10</span>
+                          </div>
+                          <input 
+                            type="range" 
+                            min="1" 
+                            max="10" 
+                            value={somaticSpeed} 
+                            onChange={e => setSomaticSpeed(Number(e.target.value))}
+                            className="w-full accent-amberWarm-500 cursor-pointer"
+                          />
+                        </div>
+
+                        <button
+                          onClick={() => setSomaticStepGuide(3)}
+                          className="w-full bg-amberWarm-500 text-white font-bold py-2.5 rounded-xl text-xs hover:bg-amberWarm-600 shadow"
+                        >
+                          Avançar para Inversão do Sentido →
+                        </button>
+                      </div>
+                    )}
+
+                    {(somaticStepGuide === 3 || somaticStepGuide === 4) && (
+                      <div className="space-y-4">
+                        <div className="p-3 bg-white rounded-xl border border-slate-200 space-y-1">
+                          <span className="font-bold text-slate-900 block">Sua Mapeação Somática:</span>
+                          <p className="text-slate-600"><strong>Local:</strong> {regionDetails[somaticRegion].title}</p>
+                          <p className="text-slate-600"><strong>Movimento:</strong> {motionLabels[somaticMotionType].name}</p>
+                          <p className="text-slate-600"><strong>Guia Visual:</strong> {visualTrackerMode === 'bola' ? 'Bola de Luz' : 'Mão Guia'}</p>
+                          <p className="text-slate-600"><strong>Velocidade:</strong> {somaticSpeed}/10</p>
+                        </div>
+
+                        <div>
+                          <div className="flex justify-between font-bold text-slate-800 mb-1">
+                            <span>Desacelerar Movimento:</span>
+                            <span className="text-amberWarm-700 font-bold">{somaticSpeed === 0 ? 'PACIFICADO' : `${somaticSpeed}/10`}</span>
+                          </div>
+                          <input 
+                            type="range" 
+                            min="0" 
+                            max="10" 
+                            value={somaticSpeed} 
+                            onChange={e => {
+                              const val = Number(e.target.value);
+                              setSomaticSpeed(val);
+                              if (val === 0) setSomaticStepGuide(4);
+                            }}
+                            className="w-full accent-amberWarm-500 cursor-pointer"
+                          />
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            setIsSomaticReverted(!isSomaticReverted);
+                            if (!isSomaticReverted) setSomaticStepGuide(4);
+                          }}
+                          className={`w-full py-3 rounded-xl font-bold text-xs transition-all shadow ${
+                            isSomaticReverted
+                              ? 'bg-amberWarm-600 text-white'
+                              : 'bg-softPurple-600 text-white hover:bg-softPurple-700'
+                          }`}
+                        >
+                          {isSomaticReverted ? '✓ Eixo / Sentido Invertido com Sucesso!' : '🔄 Inverter Sentido do Movimento Agora'}
+                        </button>
+                      </div>
+                    )}
+
+                  </div>
+
+                  {}
+                  {/* Right Column: Visualizer Canvas with Dynamic Motion Modes */}
+                  <div className="md:col-span-7 bg-darkNavy-900 p-6 rounded-2xl text-center text-white space-y-4 shadow-inner relative overflow-hidden flex flex-col items-center justify-center min-h-[360px]">
+                    
+                    <div className="flex items-center space-x-2 bg-darkNavy-800/80 px-3 py-1 rounded-full border border-softPurple-500/30">
+                      <span className="w-2 h-2 rounded-full bg-amberWarm-500 animate-pulse"></span>
+                      <span className="text-[11px] font-semibold text-softPurple-200">
+                        Visualizador — {regionDetails[somaticRegion].title} ({motionLabels[somaticMotionType].name})
+                      </span>
+                    </div>
+
+                    {/* Animated Avatar Graphic & Dynamic Motion Element */}
+                    <div className="relative w-60 h-60 flex items-center justify-center my-2">
+                      
+                      {/* Stylized Body / Region Avatar Illustration */}
+                      <svg className="w-44 h-44 relative z-0 opacity-80" viewBox="0 0 100 100" fill="none">
+                        <circle cx="50" cy="28" r="13" fill="#FEEED6"/>
+                        <path d="M50 18 C43 18 39 25 39 32 C39 38 45 42 50 44 C55 42 61 38 61 32 C61 25 57 18 50 18 Z" fill="#674AA5"/>
+                        <path d="M28 78 C28 54 38 46 50 46 C62 46 72 54 72 78 Z" fill="#E08A3E" opacity="0.9"/>
+                        <path d="M42 55 Q50 68 58 55" fill="none" stroke="#FFFDF9" strokeWidth="2.5" strokeLinecap="round"/>
+                      </svg>
+
+                      {/* Dynamic Motion Container based on somaticMotionType */}
+                      {somaticMotionType === 'girando' && (
+                        <div 
+                          className={`absolute inset-2 rounded-full border-2 ${
+                            isSomaticReverted 
+                              ? 'border-amberWarm-400 border-dashed' 
+                              : 'border-softPurple-400 border-dashed opacity-70'
+                          } transition-all duration-700`}
+                          style={{
+                            animation: `spin ${Math.max(0.5, 12 - somaticSpeed)}s linear infinite`,
+                            animationDirection: (isSomaticReverted ? (somaticDirection === 'horario' ? 'reverse' : 'normal') : (somaticDirection === 'horario' ? 'normal' : 'reverse'))
+                          }}
+                        >
+                          <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 flex items-center justify-center">
+                            {visualTrackerMode === 'bola' ? (
+                              <div className="relative flex items-center justify-center">
+                                <span className="w-6 h-6 rounded-full bg-amberWarm-500 border-2 border-white shadow-lg shadow-amberWarm-500/50 animate-pulse"></span>
+                                <span className="absolute w-10 h-10 rounded-full bg-amberWarm-400/30 animate-ping"></span>
+                              </div>
+                            ) : (
+                              <div className="w-8 h-8 rounded-full bg-softPurple-600 text-white flex items-center justify-center shadow-lg border border-white">
+                                <Icon name="Hand" className="w-4 h-4" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {somaticMotionType === 'vai-vem' && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div className="w-full h-0.5 bg-dashed bg-softPurple-500/30 absolute"></div>
+                          <div 
+                            style={{
+                              animation: `${isSomaticReverted ? 'motionVaiVemReverted' : 'motionVaiVem'} ${Math.max(0.4, 10 - somaticSpeed)}s ease-in-out infinite`
+                            }}
+                          >
+                            {visualTrackerMode === 'bola' ? (
+                              <div className="relative flex items-center justify-center">
+                                <span className="w-7 h-7 rounded-full bg-amberWarm-500 border-2 border-white shadow-lg shadow-amberWarm-500/50"></span>
+                                <span className="absolute w-11 h-11 rounded-full bg-amberWarm-400/30 animate-ping"></span>
+                              </div>
+                            ) : (
+                              <div className="w-9 h-9 rounded-full bg-softPurple-600 text-white flex items-center justify-center shadow-lg border border-white">
+                                <Icon name="Hand" className="w-5 h-5" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {somaticMotionType === 'pulsando' && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div 
+                            style={{
+                              animation: `motionPulsando ${Math.max(0.4, 10 - somaticSpeed)}s ease-in-out infinite`,
+                              animationDirection: isSomaticReverted ? 'reverse' : 'normal'
+                            }}
+                          >
+                            {visualTrackerMode === 'bola' ? (
+                              <div className="relative flex items-center justify-center">
+                                <span className="w-12 h-12 rounded-full bg-amberWarm-500 border-4 border-white shadow-2xl shadow-amberWarm-500/80"></span>
+                                <span className="absolute w-20 h-20 rounded-full bg-amberWarm-400/30 animate-ping"></span>
+                              </div>
+                            ) : (
+                              <div className="w-12 h-12 rounded-full bg-softPurple-600 text-white flex items-center justify-center shadow-2xl border-2 border-white">
+                                <Icon name="Hand" className="w-6 h-6" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      {somaticMotionType === 'vibrando' && (
+                        <div className="absolute inset-0 flex items-center justify-center">
+                          <div 
+                            style={{
+                              animation: `motionVibrando ${Math.max(0.3, 8 - somaticSpeed * 0.7)}s ease-in-out infinite`,
+                              animationDirection: isSomaticReverted ? 'reverse' : 'normal'
+                            }}
+                          >
+                            {visualTrackerMode === 'bola' ? (
+                              <div className="relative flex items-center justify-center">
+                                <span className="w-7 h-7 rounded-full bg-amberWarm-500 border-2 border-white shadow-lg shadow-amberWarm-500/50"></span>
+                                <span className="absolute w-12 h-12 rounded-full bg-amberWarm-400/30 animate-ping"></span>
+                              </div>
+                            ) : (
+                              <div className="w-9 h-9 rounded-full bg-softPurple-600 text-white flex items-center justify-center shadow-lg border border-white">
+                                <Icon name="Hand" className="w-5 h-5" />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                    </div>
+
+                    {/* Guiding Instruction */}
+                    <div className="bg-darkNavy-800/90 border border-slate-700/60 p-3 rounded-xl text-left text-xs max-w-md w-full space-y-1">
+                      <div className="flex items-center space-x-1.5 text-amberWarm-300 font-bold">
+                        <Icon name="Hand" className="w-4 h-4 text-amberWarm-400" />
+                        <span>Instrução do Exercício:</span>
+                      </div>
+                      <p className="text-slate-300 leading-relaxed text-[11px]">
+                        Acompanhe o movimento da {visualTrackerMode === 'bola' ? 'Bola de Luz' : 'Mão Guia'} em formato de <strong>{motionLabels[somaticMotionType].name}</strong>. Repita esse movimento com a sua mão no ar em frente ao <strong>{regionDetails[somaticRegion].title}</strong>. Quando inverter o eixo, <strong>inverta também o sentido da sua mão</strong>.
+                      </p>
+                    </div>
+
+                    {somaticSpeed === 0 && (
+                      <div className="p-3 bg-amberWarm-900/80 border border-amberWarm-500 text-amberWarm-100 rounded-xl text-xs font-bold animate-bounce">
+                        🎉 Movimento Pacificado! O condutor reassumiu a serenidade do corpo.
+                      </div>
+                    )}
+
+                  </div>
+
+                </div>
+
+              </div>
+
+              {/* Step 2 Card: Respiração Guiada 4-7-8 */}
+              <div id="passo2" className="bg-white rounded-3xl p-6 sm:p-8 border border-alabaster-200 shadow-sm space-y-6">
+                <div className="flex items-center justify-between border-b border-alabaster-100 pb-4">
+                  <div className="flex items-center space-x-3">
+                    <span className="w-8 h-8 rounded-xl bg-softPurple-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">2</span>
+                    <div>
+                      <h3 className="font-heading font-bold text-base sm:text-lg text-slate-900">Passo 2: Respiração Guiada 4-7-8</h3>
+                      <p className="text-xs text-slate-500">Regulação biológica do diafragma para desacelerar o sistema nervoso</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => toggleStep('step2')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-colors ${
+                      completedSteps.step2 ? 'bg-softPurple-100 text-softPurple-900' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    <Icon name="CheckCircle" className="w-4 h-4" />
+                    <span className="hidden sm:inline">{completedSteps.step2 ? 'Concluído' : 'Marcar Concluído'}</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+                  <div className="space-y-3 text-xs sm:text-sm text-slate-600">
+                    <p className="leading-relaxed">
+                      Em momentos de angústia, a respiração fica curta e rápida (torácica). A técnica 4-7-8 reduz a frequência cardíaca ao sinalizar segurança para o cérebro.
+                    </p>
+                    <div className="space-y-2 text-xs bg-softPurple-50 p-4 rounded-2xl border border-softPurple-200">
+                      <div className="flex items-center justify-between font-semibold text-softPurple-950">
+                        <span>1. Inspiração profunda (nariz):</span>
+                        <span className="bg-softPurple-200 px-2 py-0.5 rounded text-softPurple-900 font-bold">4 Segundos</span>
+                      </div>
+                      <div className="flex items-center justify-between font-semibold text-softPurple-950">
+                        <span>2. Retenção do ar na barriga:</span>
+                        <span className="bg-amberWarm-200 px-2 py-0.5 rounded text-amberWarm-900 font-bold">7 Segundos</span>
+                      </div>
+                      <div className="flex items-center justify-between font-semibold text-softPurple-950">
+                        <span>3. Expiração lenta (boca):</span>
+                        <span className="bg-softPurple-200 px-2 py-0.5 rounded text-softPurple-900 font-bold">8 Segundos</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Guided Ring Timer */}
+                  <div className="bg-gradient-to-b from-darkNavy-900 to-darkNavy-950 p-6 rounded-2xl text-center text-white space-y-5 shadow-inner">
+                    <span className="text-xs font-semibold text-amberWarm-300">Temporizador de Respiração</span>
+
+                    <div className="relative w-40 h-40 mx-auto flex items-center justify-center">
+                      <div 
+                        className={`absolute rounded-full bg-softPurple-500/30 border-2 border-softPurple-400 transition-all duration-1000 ${
+                          breathePhase === 'inhale' ? 'w-40 h-40 opacity-90 ring-4 ring-amberWarm-400/40' :
+                          breathePhase === 'hold' ? 'w-40 h-40 opacity-100 ring-8 ring-softPurple-400/50' :
+                          breathePhase === 'exhale' ? 'w-20 h-20 opacity-40' : 'w-28 h-28 opacity-60'
+                        }`}
+                      ></div>
+                      
+                      <div className="z-10 space-y-1">
+                        <span className="text-4xl font-extrabold font-heading block">
+                          {breathePhase === 'idle' ? '4-7-8' : breatheCounter}
+                        </span>
+                        <span className="text-[11px] uppercase tracking-wider font-bold text-amberWarm-200 block">
+                          {breathePhase === 'idle' && 'Pronto para iniciar'}
+                          {breathePhase === 'inhale' && 'INSPIRA (Nariz)'}
+                          {breathePhase === 'hold' && 'SEGURA O AR'}
+                          {breathePhase === 'exhale' && 'EXPIRA (Boca)'}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="text-xs text-slate-300 flex items-center justify-center space-x-2">
+                      <span>Ciclos Restantes:</span>
+                      <span className="font-bold text-amberWarm-400">{breatheCyclesLeft} de 3</span>
+                    </div>
+
+                    <div className="flex justify-center space-x-3">
+                      {breathePhase === 'idle' ? (
+                        <button
+                          onClick={startBreathing}
+                          className="w-full bg-softPurple-600 hover:bg-softPurple-500 text-white font-bold py-3 px-4 rounded-xl text-xs transition-all shadow"
+                        >
+                          Iniciar Respiração 4-7-8
+                        </button>
+                      ) : (
+                        <button
+                          onClick={stopBreathing}
+                          className="w-full bg-darkNavy-800 text-white font-medium py-3 px-4 rounded-xl text-xs"
+                        >
+                          Parar Temporizador
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Step 3 Card: Ancoragem Sensorial do Lugar Seguro */}
+              <div id="passo3" className="bg-white rounded-3xl p-6 sm:p-8 border border-alabaster-200 shadow-sm space-y-6">
+                <div className="flex items-center justify-between border-b border-alabaster-100 pb-4">
+                  <div className="flex items-center space-x-3">
+                    <span className="w-8 h-8 rounded-xl bg-sage-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">3</span>
+                    <div>
+                      <h3 className="font-heading font-bold text-base sm:text-lg text-slate-900">Passo 3: Ancoragem Sensorial do Lugar Seguro</h3>
+                      <p className="text-xs text-slate-500">Crie uma referência neural inconsciente de tranquilidade absoluta</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => toggleStep('step3')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-colors ${
+                      completedSteps.step3 ? 'bg-sage-100 text-sage-900' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    <Icon name="CheckCircle" className="w-4 h-4" />
+                    <span className="hidden sm:inline">{completedSteps.step3 ? 'Concluído' : 'Marcar Concluído'}</span>
+                  </button>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3 text-xs sm:text-sm text-slate-600">
+                    <p className="leading-relaxed">
+                      Construa a visualização de um local no qual você vivenciou paz absoluta. O cérebro responde às imagens mentais reprogramando os estados emocionais.
+                    </p>
+
+                    <div className="bg-gradient-to-br from-amberWarm-50 to-softPurple-50 p-4 rounded-2xl border border-amberWarm-200 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-bold text-amberWarm-900 uppercase tracking-wider">Sua Âncora Ativa</span>
+                        <Icon name="Lock" className="w-4 h-4 text-amberWarm-700" />
+                      </div>
+                      <p className="font-bold text-slate-900 text-sm">{safePlace.name}</p>
+                      <p className="text-xs text-slate-700"><strong>Sensação/Tato:</strong> {safePlace.touch}</p>
+                      <p className="text-xs text-slate-700"><strong>Aroma:</strong> {safePlace.smells}</p>
+                      <p className="text-xs text-slate-700"><strong>Gesto Físico de Âncora:</strong> {safePlace.gesture}</p>
+                    </div>
+                  </div>
+
+                  <form onSubmit={handleSaveSafePlace} className="bg-alabaster-50 p-5 rounded-2xl border border-alabaster-200 space-y-3 text-xs">
+                    <h4 className="font-bold text-slate-900 text-sm">Personalizar Seu Refúgio de Paz</h4>
+                    
+                    <div>
+                      <label className="block text-slate-700 font-semibold mb-1">Nome do Lugar Seguro:</label>
+                      <input 
+                        type="text" 
+                        value={safePlace.name} 
+                        onChange={e => setSafePlace({ ...safePlace, name: e.target.value })}
+                        className="w-full p-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amberWarm-500 focus:outline-none bg-white text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-700 font-semibold mb-1">Aroma / Cheiro do ambiente:</label>
+                      <input 
+                        type="text" 
+                        value={safePlace.smells} 
+                        onChange={e => setSafePlace({ ...safePlace, smells: e.target.value })}
+                        className="w-full p-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amberWarm-500 focus:outline-none bg-white text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-700 font-semibold mb-1">Sensação / Temperatura:</label>
+                      <input 
+                        type="text" 
+                        value={safePlace.touch} 
+                        onChange={e => setSafePlace({ ...safePlace, touch: e.target.value })}
+                        className="w-full p-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amberWarm-500 focus:outline-none bg-white text-xs"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-700 font-semibold mb-1">Gesto Físico de Ativação:</label>
+                      <input 
+                        type="text" 
+                        value={safePlace.gesture} 
+                        onChange={e => setSafePlace({ ...safePlace, gesture: e.target.value })}
+                        className="w-full p-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amberWarm-500 focus:outline-none bg-white text-xs"
+                      />
+                    </div>
+
+                    <button
+                      type="submit"
+                      className="w-full bg-sage-600 hover:bg-sage-700 text-white font-semibold py-2.5 rounded-xl transition-all shadow text-xs"
+                    >
+                      Salvar Âncora no Dispositivo
+                    </button>
+                  </form>
+                </div>
+              </div>
+
+              {/* Step 4 Card: Estratégia dos "Três Quês" */}
+              <div id="passo4" className="bg-white rounded-3xl p-6 sm:p-8 border border-alabaster-200 shadow-sm space-y-6">
+                <div className="flex items-center justify-between border-b border-alabaster-100 pb-4">
+                  <div className="flex items-center space-x-3">
+                    <span className="w-8 h-8 rounded-xl bg-amberWarm-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">4</span>
+                    <div>
+                      <h3 className="font-heading font-bold text-base sm:text-lg text-slate-900">Passo 4: Estratégia dos "Três Quês" (Combate à SPA)</h3>
+                      <p className="text-xs text-slate-500">Desarme os pensamentos acelerados duvidando das ameaças irreais</p>
+                    </div>
+                  </div>
+                  <button 
+                    onClick={() => toggleStep('step4')}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center space-x-1 transition-colors ${
+                      completedSteps.step4 ? 'bg-amberWarm-100 text-amberWarm-900' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    <Icon name="CheckCircle" className="w-4 h-4" />
+                    <span className="hidden sm:inline">{completedSteps.step4 ? 'Concluído' : 'Marcar Concluído'}</span>
+                  </button>
+                </div>
+
+                <form onSubmit={handleProcessSpa} className="bg-alabaster-50 p-5 rounded-2xl border border-alabaster-200 space-y-4 text-xs">
+                  <div>
+                    <label className="block text-slate-800 font-bold mb-1">Qual o pensamento catastrófico da ansiedade neste momento?</label>
+                    <input 
+                      type="text" 
+                      required
+                      value={spaThought} 
+                      onChange={e => setSpaThought(e.target.value)}
+                      className="w-full p-3 rounded-xl border border-slate-200 focus:ring-2 focus:ring-amberWarm-500 focus:outline-none bg-white text-xs sm:text-sm"
+                      placeholder="Ex: Acho que vou passar mal..."
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <div className="bg-white p-3.5 rounded-xl border border-slate-200 space-y-1">
+                      <label className="block text-amberWarm-800 font-bold">1º Quê:</label>
+                      <p className="text-[11px] text-slate-500">O que REALMENTE aconteceu para gerar isso?</p>
+                      <textarea 
+                        rows="2" 
+                        value={que1} 
+                        onChange={e => setQue1(e.target.value)}
+                        className="w-full p-2 border rounded-lg focus:outline-none text-xs"
+                        placeholder="Separar fatos de interpretações..."
+                      ></textarea>
+                    </div>
+
+                    <div className="bg-white p-3.5 rounded-xl border border-slate-200 space-y-1">
+                      <label className="block text-amberWarm-800 font-bold">2º Quê:</label>
+                      <p className="text-[11px] text-slate-500">O que você vai fazer com esse pensamento AGORA?</p>
+                      <textarea 
+                        rows="2" 
+                        value={que2} 
+                        onChange={e => setQue2(e.target.value)}
+                        className="w-full p-2 border rounded-lg focus:outline-none text-xs"
+                        placeholder="Questionar a veracidade da ameaça..."
+                      ></textarea>
+                    </div>
+
+                    <div className="bg-white p-3.5 rounded-xl border border-slate-200 space-y-1">
+                      <label className="block text-amberWarm-800 font-bold">3º Quê:</label>
+                      <p className="text-[11px] text-slate-500">O que vai fazer quando ele reaparecer?</p>
+                      <textarea 
+                        rows="2" 
+                        value={que3} 
+                        onChange={e => setQue3(e.target.value)}
+                        className="w-full p-2 border rounded-lg focus:outline-none text-xs"
+                        placeholder="Ativar a ancoragem física..."
+                      ></textarea>
+                    </div>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-darkNavy-900 hover:bg-darkNavy-800 text-white font-bold py-3 rounded-xl transition-all shadow text-xs"
+                  >
+                    Gerar Refatoração Crítica do Pensamento
+                  </button>
+                </form>
+
+                {spaGenerated && (
+                  <div className="p-4 bg-amberWarm-50 border border-amberWarm-200 rounded-2xl space-y-2">
+                    <div className="flex items-center space-x-2 text-amberWarm-950 font-bold text-xs">
+                      <Icon name="CheckCircle" className="w-4 h-4 text-amberWarm-600" />
+                      <span>Pensamento Desconstruído com Sucesso!</span>
+                    </div>
+                    <p className="text-xs text-slate-700 italic">
+                      "A mente acalmada retoma a capacidade de análise objetiva. O condutor está no comando."
+                    </p>
+                  </div>
+                )}
+              </div>
+
+            </section>
+
+            {/* Aterramento Sensorial */}
+            <section id="aterramento" className="bg-white rounded-3xl p-6 sm:p-8 border border-alabaster-200 shadow-sm space-y-6">
+              <div className="flex items-start justify-between border-b border-alabaster-100 pb-4">
+                <div>
+                  <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-softPurple-800 bg-softPurple-50 px-2.5 py-1 rounded-md mb-2">
+                    <Icon name="Hand" className="w-3.5 h-3.5 text-softPurple-600" />
+                    <span>Aterramento Sensorial Perceptivo</span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Técnica de Aterramento 5-4-3-2-1</h2>
+                  <p className="text-xs sm:text-sm text-slate-500">Essencial em momentos de sensação de desconexão ou irrealidade.</p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
+                {[
+                  { num: 5, label: 'Coisas que você VE', icon: 'Eye', color: 'border-amberWarm-200 bg-amberWarm-50/60' },
+                  { num: 4, label: 'Coisas que você TOCA', icon: 'Hand', color: 'border-softPurple-200 bg-softPurple-50/60' },
+                  { num: 3, label: 'Sons que você OUVE', icon: 'Ear', color: 'border-sage-200 bg-sage-50/60' },
+                  { num: 2, label: 'Aromas que SENTIR', icon: 'Sparkles', color: 'border-alabaster-300 bg-alabaster-100/60' },
+                  { num: 1, label: 'Sabor que PERCEBE', icon: 'Heart', color: 'border-amberWarm-300 bg-amberWarm-100/60' }
+                ].map((item) => (
+                  <div key={item.num} className={`p-4 rounded-2xl border ${item.color} space-y-2`}>
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-extrabold font-heading text-slate-900">{item.num}</span>
+                      <Icon name={item.icon} className="w-5 h-5 text-slate-700" />
+                    </div>
+                    <p className="font-semibold text-xs text-slate-800">{item.label}</p>
+                    <p className="text-[11px] text-slate-500 leading-tight">Observe em voz alta ao seu redor.</p>
+                  </div>
+                ))}
+              </div>
+            </section>
+
+            {/* Diário de Crises */}
+            <section id="diario" className="bg-white rounded-3xl p-6 sm:p-8 border border-alabaster-200 shadow-sm space-y-6">
+              <div className="flex items-start justify-between border-b border-alabaster-100 pb-4">
+                <div>
+                  <div className="inline-flex items-center space-x-1.5 text-xs font-semibold text-amberWarm-800 bg-amberWarm-50 px-2.5 py-1 rounded-md mb-2">
+                    <Icon name="History" className="w-3.5 h-3.5 text-amberWarm-600" />
+                    <span>Registro do Sujeito</span>
+                  </div>
+                  <h2 className="text-xl sm:text-2xl font-bold text-slate-900">Diário de Crises e Evolução</h2>
+                  <p className="text-xs sm:text-sm text-slate-500">Registre suas sessões para reforçar no inconsciente a sua capacidade de pacificação.</p>
+                </div>
+                {crisisLogs.length > 0 && (
+                  <button 
+                    onClick={handleClearLogs}
+                    className="text-xs text-amberWarm-600 hover:text-amberWarm-700 font-semibold"
+                  >
+                    Limpar Diário
+                  </button>
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <form onSubmit={handleAddCrisisLog} className="bg-alabaster-50 p-5 rounded-2xl border border-alabaster-200 space-y-3 text-xs">
+                  <h4 className="font-bold text-slate-900 text-sm">Registrar Conclusão de Exercício</h4>
+
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-slate-700 font-semibold mb-1">Ansiedade Inicial (1-10):</label>
+                      <input 
+                        type="number" 
+                        min="1" 
+                        max="10" 
+                        value={newLog.initialAnxiety} 
+                        onChange={e => setNewLog({ ...newLog, initialAnxiety: e.target.value })}
+                        className="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-bold text-amberWarm-600 text-center text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-slate-700 font-semibold mb-1">Ansiedade Final (1-10):</label>
+                      <input 
+                        type="number" 
+                        min="1" 
+                        max="10" 
+                        value={newLog.finalAnxiety} 
+                        onChange={e => setNewLog({ ...newLog, finalAnxiety: e.target.value })}
+                        className="w-full p-2.5 rounded-xl border border-slate-200 bg-white font-bold text-softPurple-600 text-center text-sm"
+                      />
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className="block text-slate-700 font-semibold mb-1">Anotações da Sessão:</label>
+                    <textarea 
+                      rows="2"
+                      value={newLog.notes} 
+                      onChange={e => setNewLog({ ...newLog, notes: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-slate-200 bg-white text-xs"
+                      placeholder="Ex: Consegui desacelerar a rotação e desarmar a tensão..."
+                    ></textarea>
+                  </div>
+
+                  <button
+                    type="submit"
+                    className="w-full bg-amberWarm-500 hover:bg-amberWarm-600 text-white font-semibold py-2.5 rounded-xl transition-all shadow text-xs"
+                  >
+                    Salvar Registro de Evolução
+                  </button>
+                </form>
+
+                <div className="space-y-3 overflow-y-auto max-h-72 pr-1">
+                  {crisisLogs.length === 0 ? (
+                    <div className="p-8 text-center bg-alabaster-50 rounded-2xl border border-dashed border-alabaster-200 space-y-1">
+                      <Icon name="History" className="w-8 h-8 text-slate-300 mx-auto" />
+                      <p className="text-xs font-semibold text-slate-600">Nenhum registro armazenado</p>
+                      <p className="text-[11px] text-slate-400">Seus registros de evolução serão salvos localmente em seu navegador.</p>
+                    </div>
+                  ) : (
+                    crisisLogs.map(log => (
+                      <div key={log.id} className="p-3.5 bg-white border border-slate-200 rounded-xl space-y-1 shadow-sm">
+                        <div className="flex items-center justify-between text-xs">
+                          <span className="text-[10px] text-slate-400">{log.date}</span>
+                          <div className="flex items-center space-x-2">
+                            <span className="text-[10px] bg-amberWarm-50 text-amberWarm-700 px-1.5 py-0.5 rounded font-bold">Antes: {log.initialAnxiety}</span>
+                            <span className="text-[10px] bg-softPurple-100 text-softPurple-800 px-1.5 py-0.5 rounded font-bold">Depois: {log.finalAnxiety}</span>
+                          </div>
+                        </div>
+                        <p className="text-xs text-slate-700 font-medium">{log.notes}</p>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </section>
+
+            {}
+            <section className="bg-gradient-to-r from-darkNavy-950 via-softPurple-900 to-darkNavy-900 rounded-3xl p-6 sm:p-10 text-white text-center space-y-6 shadow-xl relative overflow-hidden">
+              <div className="w-14 h-14 mx-auto rounded-2xl bg-amberWarm-500/20 text-amberWarm-300 flex items-center justify-center border border-amberWarm-500/30">
+                <Icon name="MessageCircle" className="w-8 h-8" />
+              </div>
+
+              <div className="space-y-2 max-w-2xl mx-auto">
+                <h2 className="text-2xl sm:text-3xl font-extrabold font-heading">
+                  Acompanhamento Psicanalítico Especializado
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                  Estes exercícios contêm a crise no sintoma presente. Para investigar as causas inconscientes e ressignificar as angústias de forma duradoura, agende uma consulta com o <strong>Psicanalista Daniel Silva (INJAVI)</strong>.
+                </p>
+              </div>
+
+              <div className="pt-2">
+                <a
+                  href="https://wa.me/5511940817534?text=Ol%C3%A1%20Daniel%20Silva%20(INJAVI)%2C%20acessei%20o%20app%20Serena%20e%20gostaria%20de%20agendar%20uma%20consulta%20psicanal%C3%ADtica."
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center space-x-3 bg-amberWarm-500 hover:bg-amberWarm-600 text-white font-extrabold text-xs sm:text-base px-8 py-4 rounded-2xl transition-all duration-300 hover:scale-105 shadow-lg active:scale-95"
+                >
+                  <Icon name="MessageCircle" className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <span>Agendar Consulta no WhatsApp: (11) 94081-7534</span>
+                </a>
+              </div>
+
+              <div className="flex flex-wrap justify-center items-center gap-4 text-xs text-slate-400 pt-2">
+                <span>Instagram: @injaviinstituto</span>
+                <span>•</span>
+                <span>@danielsilvapsicanalista</span>
+              </div>
+            </section>
+
+            {/* Footer */}
+            <footer className="text-center text-[11px] text-slate-400 pt-6 pb-12 border-t border-alabaster-200 space-y-2">
+              <p><strong>Nota Informativa:</strong> O aplicativo Serena é um recurso de auto-regulação baseado em PNL e Psicanálise para apoio em momentos de ansiedade.</p>
+              <p>© INJAVI — Instituto Jardim da Vida | Desenvolvido por Daniel Silva (Psicanalista)</p>
+            </footer>
+
+          </main>
+
+          {/* Bottom Bar Mobile Navigation with Dark Navy Theme */}
+          <div className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-darkNavy-900/95 backdrop-blur-md border-t border-darkNavy-800 shadow-lg px-2 py-2 flex items-center justify-around text-white">
+            <button
+              onClick={() => scrollToSection('inicio')}
+              className={`flex flex-col items-center space-y-0.5 text-[10px] font-medium ${activeTab === 'inicio' ? 'text-amberWarm-400 font-bold' : 'text-slate-400'}`}
+            >
+              <Icon name="Heart" className="w-5 h-5" />
+              <span>Início</span>
+            </button>
+
+            <button
+              onClick={() => scrollToSection('passo1')}
+              className={`flex flex-col items-center space-y-0.5 text-[10px] font-medium ${activeTab === 'passo1' ? 'text-amberWarm-400 font-bold' : 'text-slate-400'}`}
+            >
+              <Icon name="Circle" className="w-5 h-5" />
+              <span>Movimento</span>
+            </button>
+
+            <button
+              onClick={() => scrollToSection('passo2')}
+              className={`flex flex-col items-center space-y-0.5 text-[10px] font-medium ${activeTab === 'passo2' ? 'text-amberWarm-400 font-bold' : 'text-slate-400'}`}
+            >
+              <Icon name="BreathIcon" className="w-5 h-5" />
+              <span>Respiração</span>
+            </button>
+
+            <button
+              onClick={() => scrollToSection('protocolo')}
+              className={`flex flex-col items-center space-y-0.5 text-[10px] font-medium ${activeTab === 'protocolo' ? 'text-amberWarm-400 font-bold' : 'text-slate-400'}`}
+            >
+              <Icon name="Shield" className="w-5 h-5" />
+              <span>Método</span>
+            </button>
+
+            <a
+              href="https://wa.me/5511940817534?text=Ol%C3%A1%20Daniel%20Silva%20(INJAVI)%2C%20gostaria%20de%20agendar%20uma%20consulta%20psicanal%C3%ADtica."
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center space-y-0.5 text-[10px] font-bold text-amberWarm-400"
+            >
+              <Icon name="MessageCircle" className="w-5 h-5" />
+              <span>Contato</span>
+            </a>
+          </div>
+
+        </div>
+      );
+    }
+
+    const container = document.getElementById('root');
+    const root = ReactDOM.createRoot(container);
+    root.render(<App />);
+  </script>
+</body>
+</html>
