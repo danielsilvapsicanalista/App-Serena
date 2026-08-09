@@ -3,7 +3,7 @@
   "name": "Serena — Controle do Transtorno de Ansiedade",
   "icons": [
     {
-      "src": "Logo Novo.png",
+      "src": "logo.png",
       "sizes": "192x192 512x512",
       "type": "image/png",
       "purpose": "any maskable"
