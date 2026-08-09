@@ -1,0 +1,16 @@
+{
+  "short_name": "Serena",
+  "name": "Serena — Controle do Transtorno de Ansiedade",
+  "icons": [
+    {
+      "src": "icone.png",
+      "sizes": "192x192 512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ],
+  "start_url": "./",
+  "background_color": "#FFFDF9",
+  "theme_color": "#E08A3E",
+  "display": "standalone"
+}
